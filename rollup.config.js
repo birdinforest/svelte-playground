@@ -6,12 +6,13 @@ import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
+import glslify from 'rollup-plugin-glslify';
 
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
 	let server;
-	
+
 	function toExit() {
 		if (server) server.kill(0);
 	}
@@ -72,7 +73,7 @@ export default {
 				}]
 			]
 		}),
-		typescript({ sourceMap: !production }),
+		typescript({ sourceMap: true }),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
@@ -84,7 +85,10 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
+
+		// Import shader
+		glslify()
 	],
 	watch: {
 		clearScreen: false
